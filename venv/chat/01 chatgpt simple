@@ -1,0 +1,28 @@
+import openai
+import time
+
+openai.api_key = "sk-proj-o8f3hfOEwZ3m7RYqemwKT3BlbkFJA1nmM8e8GKw7emMq0Lh"
+
+def make_request():
+    try:
+        completion = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "user", "content": "Give me 3 innovative ideas in robotics"}
+            ]
+        )
+        print(completion.choices[0].message['content'])
+    except openai.error.RateLimitError:
+        print("Rate limit exceeded. Retrying in 60 seconds...")
+        time.sleep(60)
+        make_request()  # Retry the request
+    except openai.error.InvalidRequestError as e:
+        print(f"Invalid request: {e}")
+    except openai.error.AuthenticationError as e:
+        print(f"Authentication error: {e}")
+    except openai.error.APIConnectionError as e:
+        print(f"API connection error: {e}")
+    except openai.error.OpenAIError as e:
+        print(f"OpenAI error: {e}")
+
+make_request()
